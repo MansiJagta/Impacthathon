@@ -1,0 +1,130 @@
+# download_insurance_dataset.py
+import requests
+import pandas as pd
+from pathlib import Path
+import zipfile
+import io
+
+def download_insurance_fraud_dataset():
+    """Download a proven insurance fraud dataset from Kaggle via direct link"""
+    
+    print("="*60)
+    print("📥 Insurance Fraud Dataset Downloader")
+    print("="*60)
+    
+    # Create data directory
+    data_dir = Path(__file__).parent.parent.parent.parent / 'data'
+    data_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Alternative reliable dataset - Insurance Fraud Detection (from multiple sources)
+    # This is a known working dataset with clear fraud labels
+    datasets = [
+        {
+            'name': 'insurance_claims',
+            'url': 'https://raw.githubusercontent.com/plotly/datasets/master/insurance_claims.csv',
+            'description': 'Insurance claims dataset with fraud labels'
+        },
+        {
+            'name': 'fraud_oracle',
+            'url': 'https://raw.githubusercontent.com/nsethi31/Fraud-Detection-Insurance-Claims/master/insurance_claims.csv',
+            'description': 'Oracle insurance fraud dataset'
+        }
+    ]
+    
+    for dataset in datasets:
+        print(f"\n🔄 Trying: {dataset['description']}")
+        try:
+            response = requests.get(dataset['url'], timeout=30)
+            response.raise_for_status()
+            
+            # Try to parse as CSV
+            df = pd.read_csv(io.StringIO(response.text))
+            
+            # Save to file
+            output_path = data_dir / f"{dataset['name']}.csv"
+            df.to_csv(output_path, index=False)
+            
+            print(f"✅ Downloaded: {len(df)} records, {len(df.columns)} columns")
+            print(f"   Saved to: {output_path}")
+            
+            # Check for fraud column
+            fraud_cols = ['fraud', 'fraud_reported', 'is_fraud', 'claim_fraud']
+            found_fraud = None
+            for col in fraud_cols:
+                if col in df.columns or col.replace('_', '') in [c.lower().replace('_', '') for c in df.columns]:
+                    found_fraud = col
+                    break
+            
+            if found_fraud:
+                fraud_rate = df[found_fraud].mean() * 100
+                print(f"💰 Fraud rate: {fraud_rate:.2f}%")
+                return str(output_path)
+            else:
+                print("⚠️ No fraud column found, trying next dataset...")
+                
+        except Exception as e:
+            print(f"❌ Failed: {e}")
+    
+    # If all else fails, create synthetic dataset
+    print("\n⚠️ Creating synthetic insurance fraud dataset...")
+    return create_synthetic_dataset(data_dir)
+
+def create_synthetic_dataset(data_dir):
+    """Create a synthetic insurance fraud dataset for testing"""
+    from sklearn.datasets import make_classification
+    import numpy as np
+    
+    np.random.seed(42)
+    n_samples = 50000
+    
+    # Generate synthetic data with realistic fraud patterns
+    X, y = make_classification(
+        n_samples=n_samples,
+        n_features=20,
+        n_informative=15,
+        n_redundant=3,
+        n_clusters_per_class=2,
+        weights=[0.9, 0.1],  # 10% fraud rate
+        random_state=42
+    )
+    
+    # Create feature names
+    feature_names = [
+        'claim_amount', 'policy_tenure', 'age_of_vehicle', 'driver_age',
+        'annual_income', 'past_claims', 'vehicle_price', 'deductible',
+        'days_since_accident', 'injury_severity', 'num_witnesses',
+        'police_report_filed', 'time_of_accident', 'day_of_week',
+        'weather_severity', 'road_type', 'speed_at_impact', 
+        'alcohol_test_result', 'license_years', 'coverage_type'
+    ]
+    
+    # Transform to realistic ranges
+    df = pd.DataFrame(X, columns=feature_names[:20])
+    
+    # Scale features to realistic values
+    df['claim_amount'] = (df['claim_amount'] - df['claim_amount'].min()) / (df['claim_amount'].max() - df['claim_amount'].min()) * 900000 + 100000
+    df['policy_tenure'] = np.abs(df['policy_tenure'] * 365)
+    df['age_of_vehicle'] = np.abs(df['age_of_vehicle'] * 15)
+    df['driver_age'] = np.abs(df['driver_age'] * 40 + 18)
+    df['annual_income'] = np.abs(df['annual_income'] * 800000 + 200000)
+    df['past_claims'] = np.abs(df['past_claims'] * 5)
+    df['fraud_reported'] = y
+    
+    # Add categorical columns for realism
+    df['policy_type'] = np.random.choice(['motor', 'health', 'property'], n_samples)
+    df['incident_type'] = np.random.choice(['accident', 'theft', 'fire', 'damage'], n_samples)
+    df['claim_status'] = np.random.choice(['approved', 'pending', 'rejected'], n_samples)
+    
+    output_path = data_dir / 'insurance_fraud_synthetic.csv'
+    df.to_csv(output_path, index=False)
+    
+    print(f"\n✅ Created synthetic dataset:")
+    print(f"   Records: {len(df):,}")
+    print(f"   Features: {len(df.columns)}")
+    print(f"   Fraud rate: {df['fraud_reported'].mean()*100:.2f}%")
+    print(f"   Saved to: {output_path}")
+    
+    return str(output_path)
+
+if __name__ == "__main__":
+    download_insurance_fraud_dataset()
