@@ -1,6 +1,6 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from database import collection
+from database import historical_claims
 
 
 def generate_embedding(text):
@@ -11,7 +11,7 @@ def generate_embedding(text):
 
 
 def find_similar_claims(query_text, claim_type, top_k=3):
-    claims = list(collection.find({}))
+    claims = list(historical_claims.find({}))
     if not claims:
         return []
 
