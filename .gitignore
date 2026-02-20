@@ -1,0 +1,161 @@
+# Virtual Environments
+venv/
+env/
+ENV/
+.venv
+env.bak/
+venv.bak/
+.environment
+*.pyenv
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit Test / Coverage
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+.jupyter
+*.ipynb
+
+# IDE and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.project
+.pydevproject
+.settings/
+*.sublime-project
+*.sublime-workspace
+.vim/
+.emacs.d/
+*.iml
+
+# OS Files
+Thumbs.db
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+
+# Environment and Configuration
+.env
+.env.local
+.env.*.local
+config.local.json
+secrets.json
+*.key
+*.pem
+credentials.json
+
+# Application Specific
+# Temporary upload directory
+temp_uploads/
+uploaded_files/
+temp_files/
+
+# ML Model Results and Outputs
+results/
+outputs/
+*.log
+*.txt.log
+logs/
+
+# Large Model Files (models should be downloaded separately)
+# Uncomment the line below if you want to exclude model files
+# models/
+# *.pt
+# *.pth
+# *.ckpt
+# *.h5
+# *.pkl
+
+# Package and Dependency
+packages/
+.eggs/
+*.egg-link
+site-packages/
+
+# Build artifacts
+*.o
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+*.out
+*.app
+
+# IDE generated files
+*.sublime-workspace
+.vscode/settings.json
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries/
+
+# Dependency directories
+node_modules/
+vendor/
+
+# Docker
+.dockerignore
+docker-compose.local.yml
+
+# System and temporary
+tmp/
+temp/
+*.tmp
+*.bak
+*.backup
+*.swp
+*.swo
+*~
+.~*
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+database.yml
