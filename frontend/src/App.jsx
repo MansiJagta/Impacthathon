@@ -4,11 +4,13 @@ import Nav from "./components/Nav";
 import Home from "./pages/Home";
 import RoleSelect from "./pages/RoleSelect";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import ClaimerPortal from "./pages/claimer/ClaimerPortal";
 import ReviewerPortal from "./pages/reviewer/ReviewerPortal";
 import AdminPortal from "./pages/admin/AdminPortal"
 import ReviewQueue from "./pages/reviewer/ReviewQueue";
 import ClaimDetailsPage from "./pages/claimer/ClaimDetailsPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 import { Routes, Route } from "react-router-dom";
 
 
@@ -44,12 +46,12 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/role-select" element={<RoleSelect />} />
           <Route path="/login/:role" element={<Login />} />
-          <Route path="/portal/claimer" element={<ClaimerPortal />} />
-          <Route path="/portal/reviewer" element={<ReviewerPortal />} />
-          <Route path="/portal/admin" element={<AdminPortal />} />
-          <Route path="/review-queue" element={<ReviewQueue />} />
-          <Route path="/claim-details/:id" element={<ClaimDetailsPage />} />
-          <Route path="/login/:role" element={<Login />} />
+          <Route path="/register/:role" element={<Register />} />
+          <Route path="/portal/claimer" element={<ProtectedRoute component={ClaimerPortal} requiredRole="claimer" />} />
+          <Route path="/portal/reviewer" element={<ProtectedRoute component={ReviewerPortal} requiredRole="reviewer" />} />
+          <Route path="/portal/admin" element={<ProtectedRoute component={AdminPortal} requiredRole="admin" />} />
+          <Route path="/review-queue" element={<ProtectedRoute component={ReviewQueue} requiredRole="reviewer" />} />
+          <Route path="/claim-details/:id" element={<ProtectedRoute component={ClaimDetailsPage} requiredRole="claimer" />} />
         </Routes>
       </main>
     </div>

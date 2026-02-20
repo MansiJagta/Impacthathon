@@ -1,0 +1,127 @@
+# Comprehensive .gitignore for backend (FastAPI / Python)
+# Location: backend/.gitignore
+
+# -------------------------
+# Python bytecode and caches
+# -------------------------
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+
+# Compiled extensions
+*.pyd
+*.so
+*.dll
+
+# -------------------------
+# Virtual environments
+# -------------------------
+venv/
+ENV/
+env/
+.venv/
+venv_*/
+
+# -------------------------
+# Distribution / packaging
+# -------------------------
+build/
+dist/
+*.egg-info/
+*.egg
+*.whl
+
+# pip cache / installer
+pip-log.txt
+pip-delete-this-directory.txt
+
+# -------------------------
+# Testing / coverage
+# -------------------------
+.pytest_cache/
+.coverage
+.coverage.*
+coverage.xml
+nosetests.xml
+*.cover
+*.py,cover
+htmlcov/
+
+# -------------------------
+# Type checkers
+# -------------------------
+.mypy_cache/
+.dmypy.json
+typings/
+
+# -------------------------
+# Documentation
+# -------------------------
+docs/_build/
+
+# -------------------------
+# FastAPI / Uvicorn logs
+# -------------------------
+uvicorn.log*
+
+# -------------------------
+# Environment / secrets
+# -------------------------
+.env
+.env.*
+.env.local
+.python-version
+instance/
+
+# -------------------------
+# Database files
+# -------------------------
+*.sqlite3
+*.db
+
+# -------------------------
+# IDE / editor
+# -------------------------
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# -------------------------
+# OS files
+# -------------------------
+.DS_Store
+Thumbs.db
+
+# -------------------------
+# Logs
+# -------------------------
+*.log
+
+# -------------------------
+# Keys / certificates
+# -------------------------
+*.pem
+*.key
+
+# -------------------------
+# Static / media / build artifacts
+# -------------------------
+staticfiles/
+media/
+
+# -------------------------
+# Misc / accidental frontend files
+# -------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# -------------------------
+# Prevent committing site-packages accidentally
+# -------------------------
+site-packages/
+
+# End
