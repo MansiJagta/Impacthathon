@@ -1,14 +1,7 @@
 __pycache__/
-*.py[cod]
-*.pyo
-*.pyd
-*.egg-info/
-.venv/
+*.pyc
 venv/
 .env
-.pytest_cache/
-.coverage
-htmlcov/
-.vscode/
+data/
+*.pkl
 .DS_Store
-*.log
