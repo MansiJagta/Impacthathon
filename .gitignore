@@ -1,0 +1,250 @@
+# ============================================================
+# PYTHON
+# ============================================================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+*.whl
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ============================================================
+# VIRTUAL ENVIRONMENT
+# ============================================================
+
+venv/
+env/
+ENV/
+.venv/
+.env.venv
+
+# Windows virtualenv scripts
+Scripts/
+Include/
+Lib/
+
+# Poetry
+poetry.lock
+
+# Pipenv
+Pipfile.lock
+
+# uv
+.venv/
+uv.lock
+
+# ============================================================
+# CODE ANALYSIS & LINTING
+# ============================================================
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# pylint
+.pylint.d/
+
+# Ruff
+.ruff_cache/
+
+# Flake8
+.flake8
+
+# Bandit
+.bandit
+
+# PyType
+__pytype__/
+
+# Pyre
+.pyre/
+
+# ============================================================
+# LOG FILES
+# ============================================================
+
+*.log
+logs/
+*.out
+*.err
+
+# ============================================================
+# ENVIRONMENT VARIABLES
+# ============================================================
+
+.env
+.env.*
+*.env
+
+# ============================================================
+# FASTAPI / UVICORN / WEB FRAMEWORK
+# ============================================================
+
+*.pid
+*.sqlite3
+*.db
+*.sqlite
+.uvicorn
+uvicorn.sock
+
+# ============================================================
+# IDE / EDITOR FILES
+# ============================================================
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# PyCharm
+.idea/
+*.iml
+
+# Spyder
+.spyderproject
+.spyproject
+
+# Rope
+.ropeproject/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+.vim/
+
+# ============================================================
+# TEST / COVERAGE
+# ============================================================
+
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+.tox/
+.hypothesis/
+
+# ============================================================
+# OS FILES
+# ============================================================
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+
+# ============================================================
+# TEMP FILES
+# ============================================================
+
+*.tmp
+*.temp
+~$*
+
+# ============================================================
+# PDF / IMAGE TEST DATA (OPTIONAL)
+# ============================================================
+
+# Uncomment if you don't want sample documents in repo
+# *.pdf
+# *.jpg
+# *.jpeg
+# *.png
+
+# ============================================================
+# MISC
+# ============================================================
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# PyInstaller
+*.spec
+
+# Local test artifacts
+output/
+results/
+debug_output/
+test_outputs/
+temp/
+tmp/
+
+# LangGraph state dumps
+graph_visualizations/
+*.langchain_cache
+
+# Pre-commit
+.pre-commit-config.bak
+.pre-commit-framework/
+
+# mypy
+.mypy_cache
+.python-version
+
+# ============================================================
+# DATA & MODELS (if applicable)
+# ============================================================
+
+# Large model files
+*.bin
+*.safetensors
+*.pt
+*.pth
+*.ckpt
+*.h5
+*.joblib
+*.pickle
+
+# Data files
+*.csv
+*.parquet
+*.xlsx
+*.xls
+data/
+datasets/
+models/
+weights/
+
+# Uploads and processing artifacts
+uploads/
+downloads/
+exports/
+generated_files/
+
+# API responses cache
+*.cache
+cache/
+.cache/
