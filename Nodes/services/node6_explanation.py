@@ -43,8 +43,17 @@ def generate_explanation(claim_input, predictive_output):
     # Fraud Detection Node
     fraud_finding = (
         "High fraud indicators detected"
-        if fraud.fraud_score > 0.7
-        else "No significant fraud indicators"
+        has_critical = any(i.severity == "CRITICAL" for i in fraud.indicators)
+    has_high = any(i.severity == "HIGH" for i in fraud.indicators)
+    
+    if has_critical:
+        fraud_finding = "Critical fraud signals detected"
+    elif has_high:
+        fraud_finding = "High risk fraud patterns detected"
+    elif fraud.fraud_score > 0.2:
+        fraud_finding = "Moderate fraud indicators present"
+    else:
+        fraud_finding = "Low fraud probability"
     )
 
     detailed_reasoning.append(
