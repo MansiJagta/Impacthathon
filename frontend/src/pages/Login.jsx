@@ -49,6 +49,12 @@ export default function Login() {
     const handleLogin = () => {
         // Later you can add real authentication here
         localStorage.setItem("userRole", role);
+<<<<<<< HEAD
+=======
+        if (role === "claimer" && email) {
+            localStorage.setItem("userEmail", email);
+        }
+>>>>>>> f930c12 (update project before sync)
         navigate(config.portalPath);
     };
 

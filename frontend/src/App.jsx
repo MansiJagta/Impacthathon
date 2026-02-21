@@ -49,7 +49,10 @@ export default function App() {
           <Route path="/portal/admin" element={<AdminPortal />} />
           <Route path="/review-queue" element={<ReviewQueue />} />
           <Route path="/claim-details/:id" element={<ClaimDetailsPage />} />
+<<<<<<< HEAD
           <Route path="/login/:role" element={<Login />} />
+=======
+>>>>>>> f930c12 (update project before sync)
         </Routes>
       </main>
     </div>

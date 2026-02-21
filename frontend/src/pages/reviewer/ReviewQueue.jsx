@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { C } from "../../constants/theme";
 import { GaugeBar } from "../../components/GaugeBar";
 import { useNavigate } from "react-router-dom";
@@ -51,12 +52,78 @@ export default function ReviewQueue() {
     const highFraudClaims = claims
         .filter(claim => claim.fraudScore >= FRAUD_THRESHOLD)
         .sort((a, b) => b.fraudScore - a.fraudScore); // highest first
+=======
+import { useState, useEffect } from "react";
+import { C } from "../../constants/theme";
+import { GaugeBar } from "../../components/GaugeBar";
+import { useNavigate } from "react-router-dom";
+import api from "../../services/api";
+
+const FRAUD_THRESHOLD = 0.6;
+
+export default function ReviewQueue() {
+    const navigate = useNavigate();
+    const [claims, setClaims] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [notes, setNotes] = useState({});
+    const [isSubmitting, setIsSubmitting] = useState(null); // claimId being submitted
+
+    useEffect(() => {
+        async function fetchQueue() {
+            setLoading(true);
+            try {
+                const response = await api.getReviewerQueue(FRAUD_THRESHOLD);
+                setClaims(response.claims || []);
+            } catch (err) {
+                console.error("Queue fetch error:", err);
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchQueue();
+    }, []);
+
+    const handleAction = async (claimId, decision) => {
+        setIsSubmitting(claimId);
+        try {
+            const userRole = localStorage.getItem("userRole") || "reviewer";
+            const userEmail = localStorage.getItem("userEmail") || "reviewer@example.com";
+
+            await api.submitReviewDecision(claimId, {
+                decision,
+                note: notes[claimId] || "",
+                reviewer_name: userRole,
+                reviewer_email: userEmail
+            });
+
+            alert(`Claim ${decision}ed successfully!`);
+            setClaims(prev => prev.filter(c => c.claim_id !== claimId));
+        } catch (err) {
+            alert(`Failed to save decision: ${err.message}`);
+        } finally {
+            setIsSubmitting(null);
+        }
+    };
+
+    const handleNoteChange = (claimId, val) => {
+        setNotes(prev => ({ ...prev, [claimId]: val }));
+    };
+
+    if (loading) return <div style={{ padding: 40, color: C.muted }}>Loading reviewer queue...</div>;
+    if (error) return <div style={{ padding: 40, color: C.red }}>Error: {error}</div>;
+>>>>>>> f930c12 (update project before sync)
 
     return (
         <div>
 
             {/* If no high fraud claims */}
+<<<<<<< HEAD
             {highFraudClaims.length === 0 && (
+=======
+            {claims.length === 0 && (
+>>>>>>> f930c12 (update project before sync)
                 <div style={{
                     background: C.panel,
                     border: `1px solid ${C.border}`,
@@ -69,9 +136,15 @@ export default function ReviewQueue() {
                 </div>
             )}
 
+<<<<<<< HEAD
             {highFraudClaims.map((claim) => (
                 <div
                     key={claim.id}
+=======
+            {claims.map((claim) => (
+                <div
+                    key={claim.claim_id}
+>>>>>>> f930c12 (update project before sync)
                     style={{
                         background: C.panel,
                         border: `1px solid ${C.border}`,
@@ -93,18 +166,31 @@ export default function ReviewQueue() {
                             fontSize: 20,
                             fontWeight: 800
                         }}>
+<<<<<<< HEAD
                             Claim {claim.id}
                         </h2>
 
                         <span style={{
                             background: "#713f12",
                             color: C.yellow,
+=======
+                            Claim {claim.claim_id}
+                        </h2>
+
+                        <span style={{
+                            background: claim.fraud_score >= FRAUD_THRESHOLD ? "#713f12" : "#14532d",
+                            color: claim.fraud_score >= FRAUD_THRESHOLD ? C.yellow : C.green,
+>>>>>>> f930c12 (update project before sync)
                             padding: "4px 12px",
                             borderRadius: 20,
                             fontSize: 11,
                             fontWeight: 800
                         }}>
+<<<<<<< HEAD
                             ⚠ High Fraud Risk
+=======
+                            {claim.fraud_score >= FRAUD_THRESHOLD ? "⚠ High Fraud Risk" : "✓ Verification Required"}
+>>>>>>> f930c12 (update project before sync)
                         </span>
                     </div>
 
@@ -127,12 +213,19 @@ export default function ReviewQueue() {
                             </h4>
 
                             {[
+<<<<<<< HEAD
                                 { label: "Type", value: claim.type },
                                 { label: "Amount", value: claim.amount },
                                 { label: "Hospital", value: claim.hospital },
                                 { label: "Patient", value: claim.patient },
                                 { label: "Dates", value: claim.dates },
                                 { label: "Submitted by", value: claim.submittedBy },
+=======
+                                { label: "Type", value: claim.claim_type },
+                                { label: "Amount", value: `₹${claim.claim_amount.toLocaleString()}` },
+                                { label: "Created", value: new Date(claim.created_at).toLocaleDateString() },
+                                { label: "Summary", value: claim.summary },
+>>>>>>> f930c12 (update project before sync)
                             ].map((item, i) => (
                                 <div
                                     key={i}
@@ -153,6 +246,11 @@ export default function ReviewQueue() {
 
                             <textarea
                                 placeholder="Add notes (optional)…"
+<<<<<<< HEAD
+=======
+                                value={notes[claim.claim_id] || ""}
+                                onChange={(e) => handleNoteChange(claim.claim_id, e.target.value)}
+>>>>>>> f930c12 (update project before sync)
                                 style={{
                                     width: "100%",
                                     background: C.bg,
@@ -186,6 +284,7 @@ export default function ReviewQueue() {
                             </h4>
 
                             <div style={{ marginBottom: 24 }}>
+<<<<<<< HEAD
                                 <GaugeBar label="Risk Score" val={claim.riskScore} />
                                 <GaugeBar label="Fraud Score" val={claim.fraudScore} />
                             </div>
@@ -200,6 +299,24 @@ export default function ReviewQueue() {
                             }}>
                                 ⚠ This claim exceeded fraud threshold ({FRAUD_THRESHOLD})
                             </div>
+=======
+                                <GaugeBar label="Risk Score" val={claim.risk_score} />
+                                <GaugeBar label="Fraud Score" val={claim.fraud_score} />
+                            </div>
+
+                            {claim.fraud_score >= FRAUD_THRESHOLD && (
+                                <div style={{
+                                    background: "#ef444411",
+                                    border: "1px solid #ef444422",
+                                    padding: "12px",
+                                    borderRadius: 8,
+                                    color: "#f87171",
+                                    fontSize: 12
+                                }}>
+                                    ⚠ This claim exceeded fraud threshold ({FRAUD_THRESHOLD})
+                                </div>
+                            )}
+>>>>>>> f930c12 (update project before sync)
                         </div>
                     </div>
 
@@ -211,6 +328,7 @@ export default function ReviewQueue() {
                         display: "flex",
                         gap: 16
                     }}>
+<<<<<<< HEAD
                         <button style={{
                             flex: 1,
                             background: C.green,
@@ -234,11 +352,50 @@ export default function ReviewQueue() {
                             fontWeight: 800,
                             cursor: "pointer"
                         }}>
+=======
+                        <button
+                            onClick={() => handleAction(claim.claim_id, "approve")}
+                            disabled={isSubmitting === claim.claim_id}
+                            style={{
+                                flex: 2,
+                                background: C.green,
+                                color: "#fff",
+                                border: "none",
+                                padding: "16px",
+                                borderRadius: 8,
+                                fontWeight: 800,
+                                cursor: isSubmitting === claim.claim_id ? "not-allowed" : "pointer",
+                                opacity: isSubmitting === claim.claim_id ? 0.7 : 1
+                            }}
+                        >
+                            Approve Claim
+                        </button>
+
+                        <button
+                            onClick={() => handleAction(claim.claim_id, "reject")}
+                            disabled={isSubmitting === claim.claim_id}
+                            style={{
+                                flex: 2,
+                                background: C.red,
+                                color: "#fff",
+                                border: "none",
+                                padding: "16px",
+                                borderRadius: 8,
+                                fontWeight: 800,
+                                cursor: isSubmitting === claim.claim_id ? "not-allowed" : "pointer",
+                                opacity: isSubmitting === claim.claim_id ? 0.7 : 1
+                            }}
+                        >
+>>>>>>> f930c12 (update project before sync)
                             Reject & Flag
                         </button>
 
                         <button
+<<<<<<< HEAD
                             onClick={() => navigate(`/claim-details/${claim.id}`)}
+=======
+                            onClick={() => navigate(`/claim-details/${claim.claim_id}`)}
+>>>>>>> f930c12 (update project before sync)
                             style={{
                                 flex: 1,
                                 background: C.panel,
@@ -250,7 +407,11 @@ export default function ReviewQueue() {
                                 cursor: "pointer"
                             }}
                         >
+<<<<<<< HEAD
                             Request More Info
+=======
+                            Full Details →
+>>>>>>> f930c12 (update project before sync)
                         </button>
                     </div>
 
@@ -259,3 +420,7 @@ export default function ReviewQueue() {
         </div>
     );
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> f930c12 (update project before sync)

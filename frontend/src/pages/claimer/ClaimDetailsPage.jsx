@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
+<<<<<<< HEAD
 import { useState } from "react";
 import { C } from "../../constants/theme";
 import { GaugeBar } from "../../components/GaugeBar";
@@ -28,10 +29,17 @@ const claims = [
         ]
     }
 ];
+=======
+import { useState, useEffect } from "react";
+import { C } from "../../constants/theme";
+import { GaugeBar } from "../../components/GaugeBar";
+import api from "../../services/api";
+>>>>>>> f930c12 (update project before sync)
 
 export default function ClaimDetailsPage() {
     const { id } = useParams();
     const navigate = useNavigate();
+<<<<<<< HEAD
     const [showReasoning, setShowReasoning] = useState(false);
     const [note, setNote] = useState("");
 
@@ -40,6 +48,59 @@ export default function ClaimDetailsPage() {
     if (!claim) {
         return <div style={{ padding: 40 }}>Claim not found.</div>;
     }
+=======
+    const [claim, setClaim] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [showReasoning, setShowReasoning] = useState(false);
+    const [note, setNote] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    useEffect(() => {
+        async function fetchDetails() {
+            setLoading(true);
+            try {
+                const data = await api.getClaimDetails(id);
+                setClaim(data);
+            } catch (err) {
+                console.error("Error fetching claim details:", err);
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchDetails();
+    }, [id]);
+
+    const handleAction = async (decision) => {
+        setIsSubmitting(true);
+        try {
+            const userRole = localStorage.getItem("userRole") || "reviewer";
+            const userEmail = localStorage.getItem("userEmail") || "reviewer@example.com";
+
+            await api.submitReviewDecision(id, {
+                decision,
+                note,
+                reviewer_name: userRole,
+                reviewer_email: userEmail
+            });
+
+            alert(`Claim ${decision}ed successfully!`);
+            navigate(-1);
+        } catch (err) {
+            alert(`Failed to save decision: ${err.message}`);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    if (loading) return <div style={{ padding: 40, color: C.muted }}>Loading claim details...</div>;
+    if (error) return <div style={{ padding: 40, color: C.red }}>Error: {error}</div>;
+    if (!claim) return <div style={{ padding: 40 }}>Claim not found.</div>;
+
+    const userRole = localStorage.getItem("userRole");
+    const isReviewer = userRole === "reviewer" || userRole === "admin";
+>>>>>>> f930c12 (update project before sync)
 
     return (
         <div style={{ padding: 40 }}>
@@ -57,7 +118,11 @@ export default function ClaimDetailsPage() {
                     cursor: "pointer"
                 }}
             >
+<<<<<<< HEAD
                 ← Back to Review Queue
+=======
+                ← Back
+>>>>>>> f930c12 (update project before sync)
             </button>
 
             <div style={{
@@ -70,7 +135,11 @@ export default function ClaimDetailsPage() {
                 {/* Header */}
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 32 }}>
                     <h2 style={{ color: C.text, fontWeight: 800 }}>
+<<<<<<< HEAD
                         Full Claim Details – {claim.id}
+=======
+                        Full Claim Details – {claim.claim_id}
+>>>>>>> f930c12 (update project before sync)
                     </h2>
 
                     <div style={{
@@ -88,6 +157,7 @@ export default function ClaimDetailsPage() {
                 {/* Risk Badges */}
                 <div style={{ display: "flex", gap: 16, marginBottom: 32 }}>
                     <div style={{
+<<<<<<< HEAD
                         background: "#ef444411",
                         border: "1px solid #ef444422",
                         padding: "10px 18px",
@@ -107,6 +177,27 @@ export default function ClaimDetailsPage() {
                         fontWeight: 700
                     }}>
                         Risk Score: {(claim.riskScore * 100).toFixed(0)}%
+=======
+                        background: (claim.fraud_score > 0.6) ? "#ef444411" : "#22c55e11",
+                        border: `1px solid ${(claim.fraud_score > 0.6) ? "#ef444422" : "#22c55e22"}`,
+                        padding: "10px 18px",
+                        borderRadius: 8,
+                        color: (claim.fraud_score > 0.6) ? "#f87171" : "#4ade80",
+                        fontWeight: 700
+                    }}>
+                        Fraud Score: {(claim.fraud_score * 100).toFixed(0)}%
+                    </div>
+
+                    <div style={{
+                        background: (claim.risk_score > 0.6) ? "#eab30811" : "#22c55e11",
+                        border: `1px solid ${(claim.risk_score > 0.6) ? "#eab30822" : "#22c55e22"}`,
+                        padding: "10px 18px",
+                        borderRadius: 8,
+                        color: (claim.risk_score > 0.6) ? "#facc15" : "#4ade80",
+                        fontWeight: 700
+                    }}>
+                        Risk Score: {(claim.risk_score * 100).toFixed(0)}%
+>>>>>>> f930c12 (update project before sync)
                     </div>
                 </div>
 
@@ -122,11 +213,24 @@ export default function ClaimDetailsPage() {
                         AI RECOMMENDATION
                     </div>
                     <div style={{ color: C.text, fontWeight: 800, fontSize: 18 }}>
+<<<<<<< HEAD
                         {claim.aiDecision}
                     </div>
                     <div style={{ color: C.muted }}>
                         Confidence: {(claim.confidence * 100).toFixed(0)}%
                     </div>
+=======
+                        {claim.ai_decision || claim.status}
+                    </div>
+                    <div style={{ color: C.muted }}>
+                        Confidence: {(claim.confidence ? (claim.confidence * 100).toFixed(0) : "N/A")}%
+                    </div>
+                    {claim.explanation && (
+                        <div style={{ marginTop: 12, color: C.text, fontSize: 14, fontStyle: "italic", borderLeft: `3px solid ${C.blue}`, paddingLeft: 12 }}>
+                            "{claim.explanation}"
+                        </div>
+                    )}
+>>>>>>> f930c12 (update project before sync)
                 </div>
 
                 <div style={{ display: "flex", gap: 60 }}>
@@ -134,6 +238,7 @@ export default function ClaimDetailsPage() {
                     {/* LEFT */}
                     <div style={{ flex: 1 }}>
                         <Section title="Claimer Information">
+<<<<<<< HEAD
                             <Info label="Full Name" value={claim.patient} />
                             <Info label="Email" value={claim.email} />
                             <Info label="Phone" value={claim.phone} />
@@ -146,12 +251,25 @@ export default function ClaimDetailsPage() {
                             <Info label="Amount" value={claim.amount} />
                             <Info label="Hospital" value={claim.hospital} />
                             <Info label="Treatment Dates" value={claim.dates} />
+=======
+                            <Info label="Full Name" value={claim.claimer.name} />
+                            <Info label="Email" value={claim.claimer.email} />
+                            <Info label="Phone" value={claim.claimer.phone || "N/A"} />
+                            <Info label="Policy Number" value={claim.policy_number} />
+                            <Info label="Address" value={claim.claimer.address || "N/A"} />
+                        </Section>
+
+                        <Section title="Claim Metadata">
+                            <Info label="Type" value={claim.claim_type} />
+                            <Info label="Amount" value={`₹${claim.claim_amount.toLocaleString()}`} />
+>>>>>>> f930c12 (update project before sync)
                         </Section>
                     </div>
 
                     {/* RIGHT */}
                     <div style={{ flex: 1 }}>
                         <Section title="AI Risk Assessment">
+<<<<<<< HEAD
                             <GaugeBar label="Risk Score" val={claim.riskScore} />
                             <GaugeBar label="Fraud Score" val={claim.fraudScore} />
                         </Section>
@@ -168,6 +286,32 @@ export default function ClaimDetailsPage() {
                                     📄 {doc}
                                 </div>
                             ))}
+=======
+                            <GaugeBar label="Risk Score" val={claim.risk_score} />
+                            <GaugeBar label="Fraud Score" val={claim.fraud_score} />
+                        </Section>
+
+                        <Section title="Uploaded Documents">
+                            {claim.documents && claim.documents.length > 0 ? (
+                                claim.documents.map((doc, idx) => (
+                                    <div key={idx} style={{
+                                        background: C.border,
+                                        padding: "12px",
+                                        borderRadius: 8,
+                                        marginBottom: 10,
+                                        fontWeight: 600,
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center"
+                                    }}>
+                                        <span>📄 {doc.split(/[\\/]/).pop()}</span>
+                                        <a href={`http://localhost:8000/${doc}`} target="_blank" rel="noreferrer" style={{ color: C.blue, fontSize: 12 }}>View</a>
+                                    </div>
+                                ))
+                            ) : (
+                                <div style={{ color: C.muted }}>No documents uploaded.</div>
+                            )}
+>>>>>>> f930c12 (update project before sync)
                         </Section>
                     </div>
                 </div>
@@ -194,6 +338,7 @@ export default function ClaimDetailsPage() {
                             background: "#0f172a",
                             borderRadius: 12
                         }}>
+<<<<<<< HEAD
                             {claim.reasoning.map((r, i) => (
                                 <div key={i} style={{ marginBottom: 14 }}>
                                     <div style={{ fontWeight: 700 }}>{r.node}</div>
@@ -203,10 +348,26 @@ export default function ClaimDetailsPage() {
                                     </div>
                                 </div>
                             ))}
+=======
+                            {claim.reasoning && claim.reasoning.length > 0 ? (
+                                claim.reasoning.map((r, i) => (
+                                    <div key={i} style={{ marginBottom: 14 }}>
+                                        <div style={{ fontWeight: 700 }}>{r.node}</div>
+                                        <div style={{ color: C.muted }}>{r.finding}</div>
+                                        <div style={{ color: (r.confidence > 0.7) ? "#22c55e" : "#facc15" }}>
+                                            Confidence: {(r.confidence * 100).toFixed(0)}%
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <div style={{ color: C.muted }}>No detailed reasoning available yet.</div>
+                            )}
+>>>>>>> f930c12 (update project before sync)
                         </div>
                     )}
                 </div>
 
+<<<<<<< HEAD
                 {/* Reviewer Notes */}
                 <div style={{ marginTop: 40 }}>
                     <h4 style={{ color: C.muted }}>Add Review Note</h4>
@@ -231,6 +392,51 @@ export default function ClaimDetailsPage() {
                     <ActionButton label="Reject" color="#ef4444" />
                     <ActionButton label="Request More Info" color="#facc15" />
                 </div>
+=======
+                {isReviewer && (
+                    <>
+                        {/* Reviewer Notes */}
+                        <div style={{ marginTop: 40 }}>
+                            <h4 style={{ color: C.muted }}>Add Review Note</h4>
+                            <textarea
+                                value={note}
+                                onChange={(e) => setNote(e.target.value)}
+                                style={{
+                                    width: "100%",
+                                    height: 80,
+                                    background: C.panel,
+                                    border: `1px solid ${C.border}`,
+                                    borderRadius: 8,
+                                    padding: 10,
+                                    color: C.text
+                                }}
+                            />
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div style={{ display: "flex", gap: 16, marginTop: 30 }}>
+                            <ActionButton
+                                label="Approve"
+                                color="#22c55e"
+                                onClick={() => handleAction("approve")}
+                                disabled={isSubmitting}
+                            />
+                            <ActionButton
+                                label="Reject"
+                                color="#ef4444"
+                                onClick={() => handleAction("reject")}
+                                disabled={isSubmitting}
+                            />
+                            <ActionButton
+                                label="Request More Info"
+                                color="#facc15"
+                                onClick={() => handleAction("request_more_info")}
+                                disabled={isSubmitting}
+                            />
+                        </div>
+                    </>
+                )}
+>>>>>>> f930c12 (update project before sync)
 
             </div>
         </div>
@@ -268,6 +474,7 @@ function Info({ label, value }) {
     );
 }
 
+<<<<<<< HEAD
 function ActionButton({ label, color }) {
     return (
         <button style={{
@@ -279,7 +486,29 @@ function ActionButton({ label, color }) {
             fontWeight: 700,
             cursor: "pointer"
         }}>
+=======
+function ActionButton({ label, color, onClick, disabled }) {
+    return (
+        <button
+            onClick={onClick}
+            disabled={disabled}
+            style={{
+                background: color + "22",
+                border: `1px solid ${color}`,
+                color,
+                padding: "10px 18px",
+                borderRadius: 8,
+                fontWeight: 700,
+                cursor: disabled ? "not-allowed" : "pointer",
+                opacity: disabled ? 0.7 : 1
+            }}
+        >
+>>>>>>> f930c12 (update project before sync)
             {label}
         </button>
     );
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> f930c12 (update project before sync)

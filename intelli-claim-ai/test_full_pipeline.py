@@ -1,15 +1,16 @@
 import uuid
+from pathlib import Path
 
 # -----------------------------
 # NODE IMPORTS
 # -----------------------------
-from app.nodes.node1_extraction.extractor import extract_documents
+from app.nodes.node1_extraction.extractor import process_documents
 from app.nodes.node2_cross_validation.validator import cross_validate
 from app.nodes.node3_policy_coverage.policy_agent import verify_policy_coverage
 from app.nodes.node3_policy_coverage.policy_fetcher import fetch_policy
 from app.nodes.node4_fraud_detection.fraud_agent import fraud_detection
 from app.nodes.node5_predictive.predictive_agent import predictive_analysis
-from app.nodes.node6_explanation.explanation_agent import generate_explanation
+from app.nodes.node6_explanation.explanation_generator import generate_explanation
 from app.nodes.node7_decision.decision_agent import make_claim_decision
 from app.nodes.node8_subrogation.subrogation_agent import analyze_subrogation
 
@@ -26,11 +27,26 @@ PREDICTED_COST_THRESHOLD = 50000  # Node 5 threshold
 # ======================================================
 # STEP 1 — LOAD CLAIM DOCUMENTS
 # ======================================================
-files = [
-    "sample_docs/policy_motor_sample.pdf",
-    "sample_docs/bill_repair_sample.pdf",
-    "sample_docs/incident_report_sample.pdf"
+sample_dir = Path("sample_docs")
+files = []
+
+preferred_files = [
+    sample_dir / "policy.pdf",
+    sample_dir / "bill.jpg",
+    sample_dir / "IMG-20260221-WA0001.jpg",
 ]
+
+for candidate in preferred_files:
+    if candidate.exists() and candidate.is_file() and candidate.stat().st_size > 0:
+        files.append(str(candidate).replace("\\", "/"))
+
+if not files:
+    for candidate in sorted(sample_dir.glob("*")):
+        if candidate.is_file() and candidate.suffix.lower() in {".pdf", ".jpg", ".jpeg", ".png"} and candidate.stat().st_size > 0:
+            files.append(str(candidate).replace("\\", "/"))
+
+if not files:
+    raise FileNotFoundError("No usable input files found in sample_docs.")
 
 print("\n========== CLAIM PROCESSING STARTED ==========\n")
 
@@ -38,7 +54,7 @@ print("\n========== CLAIM PROCESSING STARTED ==========\n")
 # ======================================================
 # STEP 2 — NODE 1 EXTRACTION
 # ======================================================
-node1_output = extract_documents(files)
+node1_output = process_documents("dummy_claim_id", files)
 print("NODE 1 COMPLETE — DOCUMENT EXTRACTION")
 
 

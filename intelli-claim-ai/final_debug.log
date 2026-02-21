@@ -1,0 +1,11 @@
+Starting server process...
+Launched uvicorn with PID 44368
+Probing health endpoint...
+Health check FAILED: <urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>
+
+Checking if process is still alive...
+Uvicorn process is still running.
+INFO:     Started server process [44368]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
