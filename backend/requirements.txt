@@ -6,18 +6,13 @@ langgraph
 langsmith
 pymongo
 python-dotenv
+requests
 
 pytesseract
 pdf2image
 pypdf
+pymupdf
 Pillow
 opencv-python
 
-spacy
 rapidfuzz
-pandas
-numpy
-scikit-learn
-
-networkx
-joblib

@@ -46,13 +46,49 @@ export default function Login() {
         return <div style={{ padding: 40 }}>Invalid role.</div>;
     }
 
-    const handleLogin = () => {
-        // Later you can add real authentication here
-        localStorage.setItem("userRole", role);
-        if (role === "claimer" && email) {
-            localStorage.setItem("userEmail", email);
+    const handleLogin = async () => {
+        try {
+            const res = await fetch("http://localhost:8000/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email,
+                    password: pass,
+                    role
+                })
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                alert(data.detail);
+                return;
+            }
+
+            localStorage.setItem("token", data.access_token);
+
+            // decode JWT payload
+            const payload = JSON.parse(
+                atob(data.access_token.split(".")[1])
+            );
+
+            // If role mismatch, block login
+            if (payload.role !== role) {
+                alert(`You are registered as ${payload.role}. Please login via correct portal.`);
+                return;
+            }
+
+            localStorage.setItem("userEmail", payload.sub);
+
+            // Navigate based on REAL backend role
+            navigate(`/portal/${payload.role}`);
+
+        } catch (err) {
+            console.error(err);
+            alert("Login failed");
         }
-        navigate(config.portalPath);
     };
 
     return (
@@ -88,70 +124,51 @@ export default function Login() {
             </div>
 
             <h2 style={{ color: "#fff", fontSize: 28, fontWeight: 900, marginBottom: 8 }}>
-                {config.title}
+                {role.toUpperCase()} Login
             </h2>
 
             <p style={{ color: C.muted, fontSize: 14, marginBottom: 40 }}>
-                {config.desc}
+                Enter your credentials to continue
             </p>
 
-            {role === "claimer" ? (
-                <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                    <input
-                        type="email"
-                        placeholder="Email Address"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        style={{
-                            background: "rgba(255,255,255,0.05)",
-                            border: `1px solid ${C.border}`,
-                            padding: "16px",
-                            borderRadius: 12,
-                            color: "#fff",
-                            fontSize: 14,
-                            outline: "none"
-                        }}
-                    />
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
 
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        value={pass}
-                        onChange={(e) => setPass(e.target.value)}
-                        style={{
-                            background: "rgba(255,255,255,0.05)",
-                            border: `1px solid ${C.border}`,
-                            padding: "16px",
-                            borderRadius: 12,
-                            color: "#fff",
-                            fontSize: 14,
-                            outline: "none"
-                        }}
-                    />
+                <input
+                    type="email"
+                    placeholder="Email Address"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    style={{
+                        background: "rgba(255,255,255,0.05)",
+                        border: `1px solid ${C.border}`,
+                        padding: "16px",
+                        borderRadius: 12,
+                        color: "#fff",
+                        fontSize: 14,
+                        outline: "none"
+                    }}
+                />
 
-                    <button
-                        onClick={handleLogin}
-                        style={{
-                            background: C.accent,
-                            color: "#000",
-                            border: "none",
-                            padding: "18px",
-                            borderRadius: 12,
-                            fontWeight: 900,
-                            fontSize: 16,
-                            cursor: "pointer",
-                            marginTop: 8,
-                            boxShadow: `0 10px 20px ${C.accent}44`
-                        }}
-                    >
-                        {config.primaryBtn}
-                    </button>
-                </div>
-            ) : (
+                <input
+                    type="password"
+                    placeholder="Password"
+                    value={pass}
+                    onChange={(e) => setPass(e.target.value)}
+                    style={{
+                        background: "rgba(255,255,255,0.05)",
+                        border: `1px solid ${C.border}`,
+                        padding: "16px",
+                        borderRadius: 12,
+                        color: "#fff",
+                        fontSize: 14,
+                        outline: "none"
+                    }}
+                />
+
                 <button
                     onClick={handleLogin}
                     style={{
-                        background: role === "admin" ? C.text : "#a855f7",
+                        background: C.accent,
                         color: "#000",
                         border: "none",
                         padding: "18px",
@@ -159,18 +176,41 @@ export default function Login() {
                         fontWeight: 900,
                         fontSize: 16,
                         cursor: "pointer",
-                        boxShadow: "0 10px 30px rgba(168,85,247,0.3)"
+                        marginTop: 8,
+                        boxShadow: `0 10px 20px ${C.accent}44`
                     }}
                 >
-                    {config.primaryBtn}
+                    Login
                 </button>
-            )}
 
-            <div style={{ marginTop: 40, paddingTop: 20, borderTop: `1px solid ${C.border}` }}>
-                <span style={{ color: C.muted, fontSize: 13 }}>{config.altText} </span>
-                <span style={{ color: C.accent, fontSize: 13, fontWeight: 700 }}>
-                    {config.altLink}
+            </div>
+
+            <div style={{
+                marginTop: 40,
+                paddingTop: 20,
+                borderTop: `1px solid ${C.border}`,
+                fontSize: 13
+            }}>
+                <span style={{ color: C.muted }}>
+                    {config.altText}{" "}
                 </span>
+
+                {role === "claimer" ? (
+                    <span
+                        onClick={() => navigate(`/signup/${role}`)}
+                        style={{
+                            color: C.accent,
+                            fontWeight: 700,
+                            cursor: "pointer"
+                        }}
+                    >
+                        {config.altLink}
+                    </span>
+                ) : (
+                    <span style={{ color: C.accent, fontWeight: 700 }}>
+                        {config.altLink}
+                    </span>
+                )}
             </div>
 
         </div>

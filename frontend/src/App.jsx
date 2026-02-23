@@ -10,6 +10,8 @@ import AdminPortal from "./pages/admin/AdminPortal"
 import ReviewQueue from "./pages/reviewer/ReviewQueue";
 import ClaimDetailsPage from "./pages/claimer/ClaimDetailsPage";
 import { Routes, Route } from "react-router-dom";
+import Signup from "./pages/Signup";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 
 
@@ -43,12 +45,57 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/role-select" element={<RoleSelect />} />
+          <Route path="/signup/:role" element={<Signup />} />
           <Route path="/login/:role" element={<Login />} />
-          <Route path="/portal/claimer" element={<ClaimerPortal />} />
-          <Route path="/portal/reviewer" element={<ReviewerPortal />} />
-          <Route path="/portal/admin" element={<AdminPortal />} />
-          <Route path="/review-queue" element={<ReviewQueue />} />
-          <Route path="/claim-details/:id" element={<ClaimDetailsPage />} />
+
+          {/* 🔐 Protected Portals */}
+
+          <Route
+            path="/portal/claimer"
+            element={
+              <ProtectedRoute requiredRole="claimer">
+                <ClaimerPortal />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/portal/reviewer"
+            element={
+              <ProtectedRoute requiredRole="reviewer">
+                <ReviewerPortal />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/portal/admin"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <AdminPortal />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* 🔐 Also protect reviewer-only pages */}
+          <Route
+            path="/review-queue"
+            element={
+              <ProtectedRoute requiredRole="reviewer">
+                <ReviewQueue />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* 🔐 Claimer-specific page */}
+          <Route
+            path="/claim-details/:id"
+            element={
+              <ProtectedRoute requiredRole="claimer">
+                <ClaimDetailsPage />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </main>
     </div>

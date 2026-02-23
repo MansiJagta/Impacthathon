@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { C } from "../constants/theme";
 
@@ -39,11 +39,26 @@ export default function RoleSelect() {
 
     const navigate = useNavigate();
 
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (token) {
+            try {
+                const payload = JSON.parse(
+                    atob(token.split(".")[1])
+                );
+                navigate(`/portal/${payload.role}`);
+            } catch (err) {
+                localStorage.removeItem("token");
+            }
+        }
+    }, [navigate]);
+
     return (
         <div style={{ maxWidth: 1000, margin: "100px auto", padding: "0 24px" }}>
             <div style={{ textAlign: "center", marginBottom: 48 }}>
                 <h2 style={{ color: C.text, fontSize: 32, fontWeight: 900, marginBottom: 12 }}>
-                    Welcome back, John!
+                    Welcome to IntelliClaim
                 </h2>
                 <p style={{ color: C.muted, fontSize: 16 }}>
                     Select your portal to continue
@@ -51,26 +66,34 @@ export default function RoleSelect() {
             </div>
 
             <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
-                <RoleCard
-                    title="Claimer"
-                    desc="Submit new claims and track your payout status."
-                    icon="🛡️"
-                    onClick={() => navigate("/login/claimer")}
-                />
 
-                <RoleCard
-                    title="Reviewer"
-                    desc="Analyze claims with AI assistance and approve/flag docs."
-                    icon="🔍"
-                    onClick={() => navigate("/login/reviewer")}
-                />
+                <div style={{ flex: 1 }}>
+                    <RoleCard
+                        title="Claimer"
+                        desc="Submit new claims and track your payout status."
+                        icon="🛡️"
+                        onClick={() => navigate("/signup/claimer")}
+                    />
+                </div>
 
-                <RoleCard
-                    title="Administrator"
-                    desc="Access global analytics and system configuration."
-                    icon="⚙️"
-                    onClick={() => navigate("/login/admin")}
-                />
+                <div style={{ flex: 1 }}>
+                    <RoleCard
+                        title="Reviewer"
+                        desc="Analyze claims with AI assistance and approve/flag docs."
+                        icon="🔍"
+                        onClick={() => navigate("/signup/reviewer")}
+                    />
+                </div>
+
+                <div style={{ flex: 1 }}>
+                    <RoleCard
+                        title="Administrator"
+                        desc="Access global analytics and system configuration."
+                        icon="⚙️"
+                        onClick={() => navigate("/signup/admin")}
+                    />
+                </div>
+
             </div>
         </div>
     );
